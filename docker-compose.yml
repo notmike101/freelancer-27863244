@@ -2,8 +2,8 @@ version: "3.8"
 
 services:
   web:
-    image: php:7-apache
+    image: httpd:latest
     ports:
       - 80:80
     volumes:
-      - ./:/var/www/html
+      - ./:/usr/local/apache2/htdocs/
