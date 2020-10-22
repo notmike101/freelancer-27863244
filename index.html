@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <body>
+    <button id="start">Start Listening</button>
+    <button id="stop">Stop Listening</button>
+
+    <div id="output"></div>
+    <script src="js/watson-speech.min.js"></script>
+    <script>
+      (() => {
+        async function getToken() {
+          const res = await fetch("/token.php");
+
+          const json = await res.json();
+
+          return json.access_token;
+        }
+
+        let stream = null;
+
+        document.querySelector('#start').addEventListener('click', async () => {
+          const token = await getToken();
+
+          stream = WatsonSpeech.SpeechToText.recognizeMicrophone({
+            accessToken: token,
+            outputElement: '#output'
+          });
+
+          stream.recognizeStream.on('message', (frame, data) => {
+            console.log('message', frame, data);
+          });
+
+          stream.on('error', (err) => {
+            console.log(err);
+          });
+        })
+
+        document.querySelector('#stop').addEventListener('click', () => {
+          stream.stop();
+        })
+      })();
+    </script>
+  </body>
+</html>
